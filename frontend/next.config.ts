@@ -1,12 +1,9 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-outputFileTracingRoot: "./",
-};
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  outputFileTracingRoot: "./",
   eslint: {
     ignoreDuringBuilds: true,
   },
-}
+};
 
-export default nextConfig;
+module.exports = nextConfig;
