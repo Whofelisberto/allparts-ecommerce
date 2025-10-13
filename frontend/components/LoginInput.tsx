@@ -1,0 +1,78 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigation = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:4000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", data.user.name);
+        if (data.user.role === "admin") {
+          navigation.push("/admin");
+        } else {
+          navigation.push("/");
+        }
+      } else {
+        setError("Usuário não encontrado ou senha incorreta.");
+      }
+    } catch {
+      setError("Erro de conexão com a API.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="w-[550px] h-[500px] mx-auto bg-white p-12 rounded-lg shadow">
+        <h2 className="text-xl text-center font-bold mb-4 uppercase">Login</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-black text-white font-bold px-4 py-2 rounded hover:bg-neutral-800 uppercase"
+          >
+            Entrar
+          </button>
+        </form>
+        {error && <p className="text-red-600 mt-2">{error}</p>}
+        <p className="mt-4 text-md">
+          Não tem uma conta?{" "}
+          <span
+            className="text-orange-500 cursor-pointer"
+            onClick={() => navigation.push("/cadastre-se")}
+          >
+            Cadastre-se
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+}
