@@ -1,8 +1,8 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:16-alpine
     container_name: allparts-ecommerce-db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
@@ -11,16 +11,52 @@ services:
       - "5532:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d allparts-ecommerce"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
+  backend:
+    image: golang:1.25-alpine
+    container_name: allparts-ecommerce-backend
+    restart: unless-stopped
+    working_dir: /app
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_NAME: allparts-ecommerce
+      DB_SSLMODE: disable
+    volumes:
+      - ./:/app
+      - go_cache:/go/pkg/mod
+    command: sh -c "go mod download && cd backend/cmd && go run main.go"
     ports:
-      - "8080:80"
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:22-alpine
+    container_name: allparts-ecommerce-frontend
+    restart: unless-stopped
+    working_dir: /app/frontend
+    volumes:
+      - ./:/app
+      - frontend_node_modules:/app/frontend/node_modules
+      - frontend_next:/app/frontend/.next
+    command: sh -c "npm install && npm run dev -- --hostname 0.0.0.0 --port 3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
 
 volumes:
   db_data:
     driver: local
+  go_cache:
+  frontend_node_modules:
+  frontend_next:
