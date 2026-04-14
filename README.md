@@ -1,160 +1,139 @@
-# 🛒 AllParts Ecommerce
+# AllParts Ecommerce
 
-**AllParts Ecommerce** é uma aplicação full stack desenvolvida com **Golang**, **React**, **Next.js** e **Docker Compose**, com o objetivo de oferecer uma experiência completa de compra online voltada para peças gamer.
+AllParts Ecommerce e uma aplicacao full stack desenvolvida com Golang, Next.js e PostgreSQL para uma experiencia de compra online voltada para pecas gamer.
 
----
+## Tecnologias
 
-## 🚀 Tecnologias Utilizadas
+### Backend
+- Go (Golang)
+- Fiber
+- JWT
+- GORM
 
-### 🧠 Backend
-- **Go (Golang)** — API REST principal
-- **Fiber** — Framework web rápido e minimalista
-- **JWT** — Autenticação de usuários
-- **GORM** — ORM para banco de dados
-- **Docker Compose** — Gerenciamento e containerização do banco
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
 
-### 🎨 Frontend
-- **React + Next.js** — Interface moderna e dinâmica
-- **TypeScript** — Tipagem estática
-- **Tailwind CSS** — Estilização responsiva e otimizada
+### Infra
+- Docker Compose
+- PostgreSQL
 
-### 💾 Banco de Dados
-- **Postgres (via Docker Compose)**
-
----
 <img border="0" data-original-height="1080" data-original-width="1920" height="600" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEVpUiQcRz0E6bZiQ3EcTxU3Zwv2KQw7u-ofZK91Jt0iAVujUdc_xfFjMS-_zJECWS8V4Im4kOg9h5pF8GYAQogRrPcLuaDGA0SG_MrOtr2BKqIHYre9_X2Bd7-2c3elmHuL9CVZJHJ2SP_AGAhQyHF-xd9YeDat_wSNtKJCyeq0HEDk8hzEQeWEl9Piti/s1868/1.png" width="1280" />
-<br/>
- 
-```
-💡 Funcionalidades
 
-✅ Autenticação JWT
-✅ CRUD completo de produtos
-✅ Sistema de pedidos
-✅ Checkout com simulação de pagamento via Stripe
-✅ Painel administrativo para Admin
-✅ Permissões de Users
-✅ Interface moderna com Next.js
-```
+## Funcionalidades
 
-## ROTAS PÚBLICAS
-```
-POST   http://localhost:4000/api/registrar        # Registrar usuário
-POST   http://localhost:4000/api/login            # Login de usuário
-GET    http://localhost:4000/api/products         # Listar produtos
-GET    http://localhost:4000/api/products/:id     # lista produto por id
+- Autenticacao JWT
+- CRUD completo de produtos
+- Sistema de pedidos
+- Checkout com Stripe
+- Painel administrativo
+- Permissoes de usuario
+
+## Rotas principais
+
+### Publicas
+```text
+POST   http://localhost:4000/api/registrar
+POST   http://localhost:4000/api/login
+GET    http://localhost:4000/api/products
+GET    http://localhost:4000/api/products/:id
 ```
 
-## ROTAS PROTEGIDAS (necessário o token JWT)
-```
-POST   http://localhost:4000/api/orders           # Criar pedido
-GET    http://localhost:4000/api/orders           # Listar pedidos do usuário
-```
-## ROTA STRIPE
-```
-POST   http://localhost:4000/api/checkout         # fazer pedido
+### Protegidas
+```text
+POST   http://localhost:4000/api/orders
+GET    http://localhost:4000/api/orders
+POST   http://localhost:4000/api/checkout
 ```
 
-## ADMIN (necessário o token JWT)
-
+### Admin
+```text
+POST   http://localhost:4000/api/products
+GET    http://localhost:4000/api/admin/orders
+PUT    http://localhost:4000/api/products/:id
+DELETE http://localhost:4000/api/products/:id
 ```
-POST   http://localhost:4000/api/products         # Criar produto
-GET    http://localhost:4000/api/admin/orders     # Listar todos os pedidos
-PUT    http://localhost:4000/api/products/:id     # Atualizar produto
-DELETE http://localhost:4000/api/products/:id     # Deletar produto
-```
 
+## Como rodar com Docker
 
-## 🧩 Estrutura do Projeto
+O arquivo [docker-compose.yml](c:/Users/Leandro/Desktop/allparts-ecommerce/docker-compose.yml) sobe os tres servicos do projeto:
+
+- frontend em http://localhost:3000
+- backend em http://localhost:4000
+- postgres exposto em localhost:5532
+
+Suba tudo com:
 
 ```bash
-ALLPARTS-ECOMMERCE/
-│
-├── backend/
-│ ├── cmd/
-│ │ └── main.go
-│ ├── config/
-│ │ └── db.go 
-│ ├── controllers/
-│ │ ├── auth_controller.go
-│ │ ├── checkout_controller.go
-│ │ ├── order_controller.go
-│ │ └── product_controller.go
-│ ├── middlewares/
-│ │ └── auth.go
-│ ├── models/
-│ │ ├── order.go
-│ │ ├── product.go
-│ │ └── user.go
-│ ├── routes/
-│ │ └── routes.go
-│ ├── utils/
-│ │ ├── hash.go
-│ │ └── jwt.go
-│ ├── go.mod
-│ ├── go.sum
-│ └── Dockerfile
-│
-├── frontend/
-│ ├── components/
-│ │ ├── CartItem.tsx
-│ │ ├── Comments.tsx
-│ │ ├── Footer.tsx
-│ │ ├── LoginInput.tsx
-│ │ ├── Navbar
-│ │ ├── ProductCard.tsx
-│ │ ├── Register.tsx 
-│ ├── public/
-│ ├── src/
-│ │ └── app/
-│ │ ├── admin/
-│ │ ├── editar/
-│ │ ├── deletar/
-│ │ ├── products/
-│ │ ├── orders/
-│ │ ├── carrinho/
-│ │ ├── login/
-│ │ ├── pagamento/
-│ │ └── cadastre-se/
-│ ├── package.json
-│ ├── tsconfig.json
-│ └── next.config.mjs
-│
-├── docker-compose.yml
-├── .env
-├── .gitignore
+docker compose up -d --build
 ```
 
-## - Suba o banco de dados com Docker
-```
-docker-compose up -d
+Para acompanhar os logs:
+
+```bash
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f db
 ```
 
-## - Inicie o backend
+Para parar os containers:
+
+```bash
+docker compose down
 ```
+
+## Como rodar localmente
+
+### 1. Suba apenas o banco com Docker
+```bash
+docker compose up -d db
+```
+
+### 2. Rode o backend local
+```bash
 cd backend/cmd
 go run main.go
 ```
 
-## - O servidor iniciará em:
-👉 http://localhost:4000
-
-## - Inicie o frontend
-```
+### 3. Rode o frontend local
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## - Frontend disponível em:
-👉 http://localhost:3000
+## Variaveis de ambiente
 
+Crie um arquivo .env na raiz do projeto com pelo menos:
 
-## Crie um arquivo .env
-```
+```env
 JWT_SECRET=seu_segredo_aqui
 STRIPE_SECRET_KEY=seu_segredo_aqui
 ```
 
+O backend tambem aceita estas variaveis para conexao com o banco:
 
+```env
+DB_HOST=localhost
+DB_PORT=5532
+DB_USER=admin
+DB_PASSWORD=admin
+DB_NAME=allparts-ecommerce
+DB_SSLMODE=disable
+```
+
+No Docker Compose, o backend usa automaticamente:
+
+```env
+DB_HOST=db
+DB_PORT=5432
+```
+
+## Observacoes sobre Docker
+
+- Fora do Docker, o banco fica acessivel em localhost:5532.
+- Dentro da rede do Docker, o backend conecta no banco usando host db e porta 5432.
+- Se a API responder vazia em /api/products, o backend esta funcionando e o banco apenas ainda nao possui produtos cadastrados.
 
